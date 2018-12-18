@@ -1,6 +1,7 @@
 
 type Query {
     character(id: Int!): Character!
+    characters(page: Int! = 1): [Character!]!
 }
 
 type Character {

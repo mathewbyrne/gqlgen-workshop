@@ -1,4 +1,4 @@
-//go:generate gorunpkg github.com/99designs/gqlgen
+//go:generate go run scripts/gqlgen.go
 
 package server
 
@@ -21,4 +21,12 @@ func (r *queryResolver) Character(ctx context.Context, id int) (Character, error
 	chr := Character{}
 	err := http.GetJSON(fmt.Sprintf("https://rickandmortyapi.com/api/character/%d", id), &chr)
 	return chr, err
+}
+
+func (r *queryResolver) Characters(ctx context.Context, page int) ([]Character, error) {
+	var res struct {
+		Results []Character
+	}
+	err := http.GetJSON(fmt.Sprintf("https://rickandmortyapi.com/api/character/?page=%d", page), &res)
+	return res.Results, err
 }
