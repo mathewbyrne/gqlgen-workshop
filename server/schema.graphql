@@ -1,10 +1,10 @@
 
 type Query {
-    character(id: ID): Character!
+    character(id: Int!): Character!
 }
 
 type Character {
-    id: ID!
+    id: Int!
     name: String!
     species: String!
     image: String!
