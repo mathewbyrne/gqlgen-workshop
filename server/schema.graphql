@@ -2,6 +2,7 @@
 type Query {
     character(id: Int!): Character!
     characters(page: Int! = 1): [Character!]!
+    likes:[Character!]!
 }
 
 type Character {
@@ -9,4 +10,8 @@ type Character {
     name: String!
     species: String!
     image: String!
+}
+
+type Mutation {
+    like(id: Int!): [Character!]!
 }
