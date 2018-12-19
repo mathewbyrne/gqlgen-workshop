@@ -32,6 +32,7 @@ type Config struct {
 }
 
 type ResolverRoot interface {
+	Character() CharacterResolver
 	Mutation() MutationResolver
 	Query() QueryResolver
 }
@@ -45,6 +46,7 @@ type ComplexityRoot struct {
 		Name    func(childComplexity int) int
 		Species func(childComplexity int) int
 		Image   func(childComplexity int) int
+		IsLiked func(childComplexity int) int
 	}
 
 	Mutation struct {
@@ -58,6 +60,9 @@ type ComplexityRoot struct {
 	}
 }
 
+type CharacterResolver interface {
+	IsLiked(ctx context.Context, obj *model.Character) (bool, error)
+}
 type MutationResolver interface {
 	Like(ctx context.Context, id int) ([]model.Character, error)
 }
@@ -198,6 +203,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Character.Image(childComplexity), true
 
+	case "Character.isLiked":
+		if e.complexity.Character.IsLiked == nil {
+			break
+		}
+
+		return e.complexity.Character.IsLiked(childComplexity), true
+
 	case "Mutation.like":
 		if e.complexity.Mutation.Like == nil {
 			break
@@ -293,6 +305,7 @@ var characterImplementors = []string{"Character"}
 func (ec *executionContext) _Character(ctx context.Context, sel ast.SelectionSet, obj *model.Character) graphql.Marshaler {
 	fields := graphql.CollectFields(ctx, sel, characterImplementors)
 
+	var wg sync.WaitGroup
 	out := graphql.NewOrderedMap(len(fields))
 	invalid := false
 	for i, field := range fields {
@@ -321,11 +334,20 @@ func (ec *executionContext) _Character(ctx context.Context, sel ast.SelectionSet
 			if out.Values[i] == graphql.Null {
 				invalid = true
 			}
+		case "isLiked":
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._Character_isLiked(ctx, field, obj)
+				if out.Values[i] == graphql.Null {
+					invalid = true
+				}
+				wg.Done()
+			}(i, field)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
-
+	wg.Wait()
 	if invalid {
 		return graphql.Null
 	}
@@ -438,6 +460,33 @@ func (ec *executionContext) _Character_image(ctx context.Context, field graphql.
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 	return graphql.MarshalString(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _Character_isLiked(ctx context.Context, field graphql.CollectedField, obj *model.Character) graphql.Marshaler {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() { ec.Tracer.EndFieldExecution(ctx) }()
+	rctx := &graphql.ResolverContext{
+		Object: "Character",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Character().IsLiked(rctx, obj)
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return graphql.MarshalBoolean(res)
 }
 
 var mutationImplementors = []string{"Mutation"}
@@ -2312,6 +2361,7 @@ type Character {
     name: String!
     species: String!
     image: String!
+    isLiked: Boolean!
 }
 
 type Mutation {

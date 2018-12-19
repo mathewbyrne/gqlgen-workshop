@@ -10,6 +10,7 @@ type Character {
     name: String!
     species: String!
     image: String!
+    isLiked: Boolean!
 }
 
 type Mutation {

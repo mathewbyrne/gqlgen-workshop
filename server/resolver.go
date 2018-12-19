@@ -19,6 +19,10 @@ func (r *Resolver) Mutation() MutationResolver {
 	return &mutationResolver{r}
 }
 
+func (r *Resolver) Character() CharacterResolver {
+	return &characterResolver{r}
+}
+
 type queryResolver struct{ *Resolver }
 
 func (r *queryResolver) Character(ctx context.Context, id int) (model.Character, error) {
@@ -60,4 +64,15 @@ type mutationResolver struct{ *Resolver }
 func (r *mutationResolver) Like(ctx context.Context, id int) ([]model.Character, error) {
 	likes = append(likes, id)
 	return LikesCharacters()
+}
+
+type characterResolver struct{ *Resolver }
+
+func (r *characterResolver) IsLiked(ctx context.Context, chr *model.Character) (bool, error) {
+	for _, id := range likes {
+		if chr.ID == id {
+			return true, nil
+		}
+	}
+	return false, nil
 }

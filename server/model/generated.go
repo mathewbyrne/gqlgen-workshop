@@ -7,4 +7,5 @@ type Character struct {
 	Name    string `json:"name"`
 	Species string `json:"species"`
 	Image   string `json:"image"`
+	IsLiked bool   `json:"isLiked"`
 }

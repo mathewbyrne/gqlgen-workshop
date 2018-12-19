@@ -8,3 +8,8 @@ exec:
   filename: generated.go
 model:
   filename: model/generated.go
+models:
+  Character:
+    fields:
+      isLiked:
+        resolver: true
