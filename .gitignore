@@ -1,2 +1,4 @@
 vendor
-npm_modules
+node_modules
+.cache
+dist
