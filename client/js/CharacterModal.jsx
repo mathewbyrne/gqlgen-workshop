@@ -1,5 +1,5 @@
 import React from 'react'
-import { Query } from 'react-apollo'
+import { Query, Mutation } from 'react-apollo'
 import gql from 'graphql-tag'
 
 const CharacterModal = ({ id, onClose }) => (
@@ -9,10 +9,12 @@ const CharacterModal = ({ id, onClose }) => (
         query={gql`
           query Character($id: ID!) {
             character(id: $id) {
+              id
               name
               species
               status
               image
+              isLiked
             }
           }
         `}
@@ -44,9 +46,25 @@ const CharacterDisplay = ({ character, onClose }) => (
         <dt>Status</dt>
         <dd>{character.status}</dd>
       </dl>
-      {/* TODO Button */}
+      {character.isLiked ? '💜' : <FavouriteButton id={character.id} />}
     </div>
   </div>
+)
+
+const FavouriteButton = ({ id }) => (
+  <Mutation
+    mutation={gql`
+      mutation LikeCharacter($id: ID!) {
+        like(id: $id) {
+          id
+          isLiked
+        }
+      }
+    `}
+    variables={{ id }}
+  >
+    {favourite => <button onClick={favourite}>Favourite</button>}
+  </Mutation>
 )
 
 export default CharacterModal
