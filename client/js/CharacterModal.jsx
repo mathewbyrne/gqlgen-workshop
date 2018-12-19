@@ -1,8 +1,31 @@
 import React from 'react'
+import { Query } from 'react-apollo'
+import gql from 'graphql-tag'
 
 const CharacterModal = ({ id, onClose }) => (
   <div className="character-modal">
-    <div className="character-modal__container">{/* TODO GraphQL Query */}</div>
+    <div className="character-modal__container">
+      <Query
+        query={gql`
+          query Character($id: ID!) {
+            character(id: $id) {
+              name
+              species
+              status
+              image
+            }
+          }
+        `}
+        variables={{ id }}
+      >
+        {({ loading, error, data }) => {
+          if (loading) return <div className="loading">Loading...</div>
+          if (error) return <div className="error">Error</div>
+          const character = data.character
+          return <CharacterDisplay character={character} onClose={onClose} />
+        }}
+      </Query>
+    </div>
   </div>
 )
 

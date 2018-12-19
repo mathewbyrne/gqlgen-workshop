@@ -2,9 +2,11 @@ import React, { useState } from 'react'
 import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
 import CharacterList from './CharacterList'
+import CharacterModal from './CharacterModal'
 
 const CharacterExplorer = () => {
   const [page, setPage] = useState(1)
+  const [character, setCharacter] = useState(null)
   return (
     <div className="character-explorer">
       <h1>Rick &amp; Morty Exporer</h1>
@@ -32,6 +34,7 @@ const CharacterExplorer = () => {
                   characters={data.characters}
                   onClick={character => setCharacter(character.id)}
                 />
+                {character && <CharacterModal id={character} onClose={() => setCharacter(null)} />}
               </div>
             )
           }}
