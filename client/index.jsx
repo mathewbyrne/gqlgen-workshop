@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import ApolloClient from 'apollo-boost'
 import { ApolloProvider } from 'react-apollo'
+import CharacterExplorer from './js/CharacterExplorer'
 
 document.addEventListener('DOMContentLoaded', () => {
   ReactDOM.render(<App />, document.getElementById('app'))
@@ -13,6 +14,6 @@ const client = new ApolloClient({
 
 const App = () => (
   <ApolloProvider client={client}>
-    <h1>Rick &amp; Morty Explorer</h1>
+    <CharacterExplorer />
   </ApolloProvider>
 )

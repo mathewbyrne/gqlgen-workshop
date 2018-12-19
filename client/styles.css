@@ -1,0 +1,138 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+button {
+    border: none;
+    margin: 0;
+    padding: 0;
+    width: auto;
+    overflow: visible;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    line-height: normal;
+    -webkit-font-smoothing: inherit;
+    -moz-osx-font-smoothing: inherit;
+    -webkit-appearance: none;
+
+    padding: 0.5em 1em;
+    margin: 0 0.5em;
+    background-color: #eee;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+h1 {
+    text-align: center;
+}
+
+.loading {
+    text-align: center;
+}
+
+.character-explorer {
+    max-width: 1028px;
+    margin: 0 auto;
+}
+
+.character-explorer__controls {
+    margin-bottom: 1em;
+    text-align: center;
+}
+
+.character-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 128px);
+    grid-gap: 1em;
+    justify-content: center;
+}
+
+.character-list__item {
+    cursor: pointer;
+}
+
+.character-list__item img {
+    width: 128px;
+    height: 128px;
+    margin-bottom: 0.5em;
+}
+
+.character-list__name {
+    max-width: 128px;
+    text-align: center;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.character-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255,255,255,0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.character-modal__container {
+    background-color: white;
+    padding: 2em;
+    position: relative;
+    border-radius: 10px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border-radius: 50%;
+    padding: 0.2em 0.5em;
+    margin: 0;
+}
+
+.character-modal__details {
+    text-align: center;
+}
+
+dl {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-gap: 1em;
+}
+
+dt {
+    font-weight: bold;
+    text-align: right;
+}
+
+dd {
+    margin: 0;
+    text-align: left;
+}
+
+.pagination {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    margin-bottom: 1em;
+}
+
+.pagination__prev {
+    text-align: right;
+}
+
+.pagination__page {
+    text-align: center;
+    line-height: 2.1em;
+    margin: 0 1em;
+}
+
+.pagination__next {
+    text-align: left;
+}
