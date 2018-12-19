@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 import ApolloClient from 'apollo-boost'
-import { ApolloProvider, Query } from 'react-apollo'
+import { ApolloProvider, Query, Mutation } from 'react-apollo'
 import gql from 'graphql-tag'
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -83,6 +83,7 @@ const CharacterModal = ({ id, onClose }) => (
               name
               species
               image
+              isLiked
             }
           }
         `}
@@ -105,6 +106,7 @@ const CharacterModal = ({ id, onClose }) => (
                   <dt>Species</dt>
                   <dd>{character.species}</dd>
                 </dl>
+                {character.isLiked ? '💜' : <FavouriteButton id={id} />}
               </div>
             </div>
           )
@@ -112,4 +114,20 @@ const CharacterModal = ({ id, onClose }) => (
       </Query>
     </div>
   </div>
+)
+
+const FavouriteButton = ({ id }) => (
+  <Mutation
+    mutation={gql`
+      mutation LikeCharacter($id: Int!) {
+        like(id: $id) {
+          id
+          isLiked
+        }
+      }
+    `}
+    variables={{ id }}
+  >
+    {favourite => <button onClick={favourite}>Favourite</button>}
+  </Mutation>
 )
