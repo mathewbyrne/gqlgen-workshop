@@ -1,4 +1,7 @@
 import React, { useState } from 'react'
+import { Query } from 'react-apollo'
+import gql from 'graphql-tag'
+import CharacterList from './CharacterList'
 
 const CharacterExplorer = () => {
   const [page, setPage] = useState(1)
@@ -7,7 +10,32 @@ const CharacterExplorer = () => {
       <h1>Rick &amp; Morty Exporer</h1>
       <div className="character-explorer__controls">
         <PaginationControls page={page} setPage={setPage} />
-        {/* TODO Query */}
+        <Query
+          query={gql`
+            query GetCharacters($page: Int!) {
+              characters(page: $page) {
+                id
+                name
+                image
+              }
+            }
+          `}
+          variables={{ page }}
+        >
+          {({ loading, error, data }) => {
+            if (loading) return <div className="loading">Loading...</div>
+            if (error) return <div className="error">Error</div>
+
+            return (
+              <div>
+                <CharacterList
+                  characters={data.characters}
+                  onClick={character => setCharacter(character.id)}
+                />
+              </div>
+            )
+          }}
+        </Query>
       </div>
     </div>
   )
