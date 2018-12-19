@@ -27,6 +27,12 @@ func (r *queryResolver) Character(ctx context.Context, id string) (model.Charact
 	return chr, err
 }
 
+func (r *queryResolver) Characters(ctx context.Context, page int) ([]model.Character, error) {
+	var res struct{ Results []model.Character }
+	err := http.GetJSON(fmt.Sprintf("https://rickandmortyapi.com/api/character/?page=%d", page), &res)
+	return res.Results, err
+}
+
 type characterResolver struct{ *Resolver }
 
 func (r *characterResolver) ID(ctx context.Context, chr *model.Character) (string, error) {
